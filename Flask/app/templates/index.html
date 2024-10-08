@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AiMara Traductor</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #ffffff;
+            color: #918f8f;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar img {
+            height: 30px;
+        }
+
+        .navbar h1 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 150;
+            color: #a3a3a3;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 350px;
+        }
+
+        .translate-box {
+            width: 100%;
+            max-width: 1500px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .translate-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .translate-section textarea {
+            width: 100%;
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f0f2f5;
+            font-size: 16px;
+            color: #555;
+            resize: none;
+            transition: background-color 0.3s ease;
+            height: 180px;
+        }
+
+        .translate-section textarea:focus {
+            background-color: #e8ebef;
+            outline: none;
+        }
+
+        .translate-section div {
+            flex: 1;
+        }
+
+        .translate-section p {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* Button section */
+        .button-section {
+            text-align: left;
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .button-section button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #00c2cb;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .button-section button:hover:not(:disabled) {
+            background-color: #00a0a7;
+            transform: translateY(-2px);
+        }
+
+        .button-section button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .button-section button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1024px) {
+            .translate-section {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .translate-box {
+                padding: 20px;
+            }
+
+            .translate-section textarea {
+                height: 150px;
+            }
+
+            .button-section button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <img src="{{url_for('static', filename='logo_aimara.png')}}" alt="AIMARA Logo">
+    <h1>Traductor Beta v.01</h1>
+</nav>
+
+<!-- Main content -->
+<div class="main-content">
+    <div class="translate-box">
+        <form method="POST">
+            <!-- Translation Section -->
+            <div class="translate-section">
+                <div>
+                    <p>Texto de origen</p>
+                    <textarea name="text1" placeholder="Escribe el texto en aimara..." onkeypress="return handleKeyPress(event)">{{ aymara }}</textarea>
+                </div>
+
+                <div>
+                    <p>Texto traducido</p>
+                    <textarea readonly placeholder="Aquí aparecerá la traducción...">{{ espanol }}</textarea>
+                </div>
+            </div>
+
+            <!-- Button Section -->
+            <div class="button-section">
+                <button type="submit">Traducir</button>
+                <!-- Botones adicionales, deshabilitados por ahora -->
+                <button disabled>Editar</button>
+                <button disabled>Reportar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Función para enviar el formulario al presionar la tecla Enter
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            document.querySelector('form').submit();
+        }
+    }
+</script>
+
+</body>
+</html>

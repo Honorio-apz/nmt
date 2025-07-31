@@ -5,196 +5,209 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>AiMara Traductor</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap">
+    <!-- Carga Tailwind CSS y configuración de colores personalizados -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'aimara-primary': '#00c2cb', // Color principal de Aimara Lab
+                        'aimara-dark': '#00a0a7',   // Un tono más oscuro para estados hover
+                        'aimara-text-dark': '#333333', // Un negro suave para texto principal
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'], // Define la fuente Inter
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* Importa la fuente Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #ffffff;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: #ffffff;
-            color: #918f8f;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar img {
-            height: 30px;
-        }
-
-        .navbar h1 {
-            font-size: 18px;
-            margin: 0;
-            font-weight: 150;
-            color: #a3a3a3;
-        }
-
-        /* Main content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-bottom: 350px;
-        }
-
-        .translate-box {
-            width: 100%;
-            max-width: 1500px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .translate-section {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .translate-section textarea {
-            width: 100%;
-            padding: 20px;
-            border: none;
-            border-radius: 10px;
-            background-color: #f0f2f5;
-            font-size: 16px;
-            color: #555;
-            resize: none;
-            transition: background-color 0.3s ease;
-            height: 180px;
-        }
-
-        .translate-section textarea:focus {
-            background-color: #e8ebef;
-            outline: none;
-        }
-
-        .translate-section div {
-            flex: 1;
-        }
-
-        .translate-section p {
-            font-size: 16px;
-            font-weight: 500;
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        /* Button section */
-        .button-section {
-            text-align: left;
-            margin-top: 20px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .button-section button {
-            padding: 12px 25px;
-            font-size: 16px;
-            background-color: #00c2cb;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .button-section button:hover:not(:disabled) {
-            background-color: #00a0a7;
-            transform: translateY(-2px);
-        }
-
-        .button-section button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-
-        .button-section button:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 1024px) {
-            .translate-section {
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .translate-box {
-                padding: 20px;
-            }
-
-            .translate-section textarea {
-                height: 150px;
-            }
-
-            .button-section button {
-                font-size: 14px;
-                padding: 10px 20px;
-            }
+            font-family: 'Inter', sans-serif; /* Aplica la fuente Inter a todo el cuerpo */
         }
     </style>
 </head>
-<body>
+<body class="bg-white flex flex-col min-h-screen">
 
 <!-- Navbar -->
-<nav class="navbar">
-    <img src="{{url_for('static', filename='logo_aimara.png')}}" alt="AIMARA Logo">
-    <h1>Traductor Beta v.01</h1>
+<nav class="bg-white text-gray-400 p-4 border-b border-gray-200">
+    <div class="container mx-auto flex items-center justify-between">
+        <!-- El logo ahora es un enlace clickable -->
+        <a href="https://www.aimaralab.com" target="_blank" rel="noopener noreferrer">
+            <img src="{{url_for('static', filename='logo_aimara.png')}}" alt="AIMARA Logo" class="h-7">
+        </a>
+        <h1 class="text-lg font-light text-gray-500">Traductor Beta v.01</h1>
+    </div>
 </nav>
 
 <!-- Main content -->
-<div class="main-content">
-    <div class="translate-box">
-        <form method="POST">
-            <!-- Translation Section -->
-            <div class="translate-section">
-                <div>
-                    <p>Texto de origen</p>
-                    <textarea name="text1" placeholder="Escribe el texto en aimara..." onkeypress="return handleKeyPress(event)">{{ aymara }}</textarea>
-                </div>
+<div class="flex-1 flex justify-center items-center py-8 px-4">
+    <div class="w-full max-w-6xl bg-white p-8 rounded-lg "> <!-- Añadido un borde sutil en lugar de sombra : border border-gray-200-->
+        <!-- Select Model Section -->
+        <div class="mb-6">
+            <label for="modelSelect" class="block text-aimara-text-dark text-sm font-semibold mb-2">
+                Seleccionar modelo
+            </label>
+            <select
+                    id="modelSelect"
+                    name="model"
+                    class="w-full p-3 text-base rounded-lg border border-gray-300 bg-gray-50 text-aimara-text-dark focus:outline-none focus:ring-2 focus:ring-aimara-primary focus:border-transparent transition duration-200 ease-in-out"
+            >
+                <option value="transformer" {% if model == 'transformer' %}selected{% endif %}>Transformer</option>
+                <option value="seq2seq" {% if model == 'seq2seq' %}selected{% endif %}>Seq2Seq</option>
+            </select>
+        </div>
 
-                <div>
-                    <p>Texto traducido</p>
-                    <textarea readonly placeholder="Aquí aparecerá la traducción...">{{ espanol }}</textarea>
-                </div>
+        <!-- Translation Textareas Section -->
+        <div class="flex flex-col md:flex-row justify-between gap-6 mb-6">
+            <div class="flex-1">
+                <p class="text-aimara-text-dark text-base font-semibold mb-2">Texto de origen</p>
+                <textarea
+                        id="inputText"
+                        name="text1"
+                        rows="6"
+                        class="w-full p-4 border border-gray-300 rounded-lg bg-gray-50 text-aimara-text-dark resize-none focus:outline-none focus:ring-2 focus:ring-aimara-primary focus:border-transparent transition duration-200 ease-in-out"
+                        placeholder="Escribe el texto en español..."
+                >{{ aymara }}</textarea>
             </div>
 
-            <!-- Button Section -->
-            <div class="button-section">
-                <button type="submit">Traducir</button>
-                <!-- Botones adicionales, deshabilitados por ahora -->
-                <button disabled>Editar</button>
-                <button disabled>Reportar</button>
+            <div class="flex-1">
+                <p class="text-aimara-text-dark text-base font-semibold mb-2">Texto traducido</p>
+                <textarea
+                        id="translatedText"
+                        readonly
+                        rows="6"
+                        class="w-full p-4 border border-gray-300 rounded-lg bg-gray-50 text-aimara-text-dark resize-none focus:outline-none focus:ring-2 focus:ring-aimara-primary focus:border-transparent"
+                        placeholder="Aquí aparecerá la traducción..."
+                >{{ espanol }}</textarea>
             </div>
-        </form>
+        </div>
+
+        <!-- Button Section -->
+        <div class="flex flex-wrap gap-4 justify-start">
+            <button
+                    id="translateButton"
+                    type="button"
+                    class="px-6 py-3 text-base font-semibold bg-aimara-primary text-white rounded-lg hover:bg-aimara-dark focus:outline-none focus:ring-2 focus:ring-aimara-primary focus:ring-opacity-75 transition duration-200 ease-in-out transform hover:scale-105"
+            >
+                Traducir
+            </button>
+            <button
+                    disabled
+                    class="px-6 py-3 text-base font-semibold bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed"
+            >
+                Editar
+            </button>
+            <button
+                    disabled
+                    class="px-6 py-3 text-base font-semibold bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed"
+            >
+                Reportar
+            </button>
+        </div>
+
+        <!-- Loading and Error Indicators -->
+        <div id="loadingIndicator" class="hidden text-center mt-6 text-aimara-primary font-medium text-lg">
+            Traduciendo...
+        </div>
+        <div id="errorMessage" class="hidden mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-center">
+            <!-- Mensajes de error aquí -->
+        </div>
     </div>
 </div>
 
+<!-- Footer con información de contacto -->
+<footer class="bg-gray-100 text-gray-600 py-4 mt-auto border-t border-gray-200">
+    <div class="container mx-auto text-center text-sm">
+        <p>Contacto: <a href="mailto:contact@aimaralab.com" class="text-aimara-primary hover:underline">contact@aimaralab.com</a></p>
+    </div>
+</footer>
+
 <script>
-    // Función para enviar el formulario al presionar la tecla Enter
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            document.querySelector('form').submit();
-        }
+    // Obtener referencias a los elementos del DOM
+    const inputText = document.getElementById('inputText');
+    const modelSelect = document.getElementById('modelSelect');
+    const translateButton = document.getElementById('translateButton');
+    const translatedText = document.getElementById('translatedText');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+
+    // Función para mostrar mensajes de error
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
     }
+
+    // Función para ocultar mensajes de error
+    function hideError() {
+        errorMessage.classList.add('hidden');
+    }
+
+    // Event listener para el botón de traducir
+    translateButton.addEventListener('click', async () => {
+        const text = inputText.value.trim();
+        const model = modelSelect.value;
+
+        hideError(); // Ocultar cualquier error previo
+
+        if (!text) {
+            showError('Por favor, ingresa el texto a traducir.');
+            return;
+        }
+
+        // Mostrar indicador de carga
+        loadingIndicator.classList.remove('hidden');
+        translateButton.disabled = true; // Deshabilitar botón durante la traducción
+        translatedText.value = ''; // Limpiar el área de texto de traducción
+
+        try {
+            const response = await fetch('/api/translate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text, model: model }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                translatedText.value = data.translation;
+            } else {
+                showError(data.error || 'Ocurrió un error desconocido.');
+            }
+        } catch (error) {
+            console.error('Error en la solicitud de traducción:', error);
+            showError('No se pudo conectar con el servidor de traducción. Inténtalo de nuevo más tarde.');
+        } finally {
+            // Ocultar indicador de carga y habilitar botón
+            loadingIndicator.classList.add('hidden');
+            translateButton.disabled = false;
+        }
+    });
+
+    // Opcional: Permitir traducción al presionar Enter en el área de texto
+    inputText.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) { // Traducir con Enter, no con Shift+Enter
+            event.preventDefault();
+            translateButton.click();
+        }
+    });
+
+    // Inicializar el valor del textarea de traducción si ya hay texto
+    // Esto es útil si el usuario regresa a la página con datos de sesión
+    window.addEventListener('load', () => {
+        if (translatedText.value.trim() !== '') {
+            // Si ya hay una traducción, no hacer nada especial
+        } else if (inputText.value.trim() !== '') {
+            // Si hay texto de origen pero no traducción, se podría intentar traducir al cargar
+            // Pero por ahora, lo dejaremos para que el usuario haga clic en traducir.
+        }
+    });
 </script>
 
 </body>

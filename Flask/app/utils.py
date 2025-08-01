@@ -79,5 +79,5 @@ def translate(text, model_type='transformer'):
 # Si quieres que los modelos estén listos desde el primer request,
 # puedes llamar a estas funciones aquí. Sin embargo, si los modelos son muy grandes,
 # esto puede ralentizar el inicio de Flask.
-# _load_transformer_model()
-# _load_seq2seq_model()
+_load_transformer_model()
+_load_seq2seq_model()

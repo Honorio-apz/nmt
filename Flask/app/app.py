@@ -39,13 +39,11 @@ def api_translate():
         # Si la solicitud no es JSON, devuelve un error 400
         return jsonify({'error': 'Tipo de contenido no soportado. Se espera JSON.'}), 400
 
-if __name__ == '__main__':
-    # Opcional: precargar modelos al inicio de la aplicación
-    # Descomenta las siguientes líneas si quieres que los modelos estén listos
-    # desde el primer request, aunque esto puede ralentizar el inicio del servidor.
-    # print("Precargando modelos...")
-    # utils._load_transformer_model()
-    # utils._load_seq2seq_model()
-    # print("Modelos precargados.")
 
-    app.run(debug=True, port=8090)
+
+if __name__ == '__main__':
+    # Para desarrollo:
+    app.run(host='0.0.0.0', port=8092, debug=True)
+
+    # Para producción:
+    # app.run(host='0.0.0.0', port=8080)
